@@ -134,8 +134,81 @@ public class Parser {
     }
 
     private boolean E() {
+        if(T() && N1()) {
+            return true;
+        }
         return false;
     }
 
     /* TODO: sus otras funciones aqui */
+
+    private boolean N1() {
+        int save = next;
+        if(term(Token.PLUS) && T() && N1()) { 
+            return true;
+        }
+        next = save;
+        if(term(Token.MINUS) && T() && N1()) {
+            return true;
+        }
+        next = save;
+        return true;
+    }
+
+    private boolean T() {
+        if(P() && N2()) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean N2() {
+        int save = next;
+        if(term(Token.MULT) && P() && N2()) {
+            return true;
+        }
+        next = save;
+        if(term(Token.DIV) && P() && N2()) {
+            return true;
+        }
+        next = save;
+        if(term(Token.MOD) && P() && N2()) {
+            return true;
+        }
+        next = save;
+        return true;
+    }
+
+    private boolean P() {
+        if(F() && N3()) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean N3() {
+        int save = next;
+        if(term(Token.EXP) && F() && N3()) {
+            return true;
+        }
+        next = save;
+        return true;
+    }
+
+    private boolean F() {
+        int save = next;
+        if(term(Token.MINUS) && F()) {
+            return true;
+        }
+        next = save;
+        if(term(Token.LPAREN) && E() && term(Token.RPAREN)) {
+            return true;
+        }
+        next = save;
+        if(term(Token.NUMBER)) {
+            return true;
+        }
+        next = save;
+        return false;
+    }
 }
